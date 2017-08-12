@@ -63,6 +63,20 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        'ftp' => [
+            'driver'   => 'ftp',
+            'host'     => 'domyhw.xyz',
+            'username' => 'chatfiles@domyhw.xyz',
+            'password' => 'Comcast22',
+
+            // Optional FTP Settings...
+             'port'     => 21,
+            // 'root'     => '/chatfiles',
+            // 'passive'  => true,
+             'ssl'      => true,
+            // 'timeout'  => 30,
+        ],
+
     ],
 
 ];

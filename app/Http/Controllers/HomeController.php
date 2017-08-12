@@ -42,6 +42,8 @@ class HomeController extends Controller
       $ext = $request->file('chatfile')->getClientOriginalExtension();
       if($ext == 'txt'){        
         $path = $request->file('chatfile')->storeAs('chatfiles', time().'_'.\Auth::user()->name.$name);
+        $content = file_get_contents($request->file('chatfile'));
+        \Storage::disk('ftp')->put(time().'_'.\Auth::user()->name.$name, $content);
 
         Pathfile::create(['filepath'=>$path , 'user_id' => \Auth::user()->id]);
 
