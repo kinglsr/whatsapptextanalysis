@@ -1,2 +1,0 @@
-# whatsapptextanalysis
-whatsapp texts analysis
