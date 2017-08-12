@@ -161,7 +161,7 @@ class DisplayController extends Controller
             $results = json_decode($json, true);       
             $probability = $results['probability'];
             $label = $results['label'];
-            return view('\graph' , compact('label' , 'probability'));
+            return view('/graph' , compact('label' , 'probability'));
           }
         else {
           return ('No server Response');
