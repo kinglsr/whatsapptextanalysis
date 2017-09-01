@@ -261,7 +261,7 @@ class HomeController extends Controller
     $path1 = $request->file('chatfile.0')->storeAs('chatfiles', time().'_'.\Auth::user()->name.$fileName1);
 
       $content1 = file_get_contents($request->file('chatfile.0'));
-      \Storage::disk('ftp')->put(time().'_'.\Auth::user()->name.$fileName1, $content );
+      \Storage::disk('ftp')->put(time().'_'.\Auth::user()->name.$fileName1, $content1 );
 
     $path2 = $request->file('chatfile.1')->storeAs('chatfiles', time().'_'.\Auth::user()->name.$fileName2);
 
