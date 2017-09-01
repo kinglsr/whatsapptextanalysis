@@ -123,9 +123,9 @@ class BydateController extends Controller
 
     $toArray = explode('-', $input['toDate']);
      
-    $toyear = str_split($fromArray[0] , 2);
+    $toyear = str_split($toArray[0] , 2);
      
-    $newto = $fromArray[1].'/'.$fromArray[2].'/'.$fromyear[1];
+    $newto = $toArray[1].'/'.$toArray[2].'/'.$toyear[1];
     
 
     $from = $newfrom;    //  whatsapp  mon/date/year  6/14/16
@@ -168,11 +168,7 @@ class BydateController extends Controller
         
         $selected_array = array();
         $textToDisplay = array();
-
         $j = 0;
-        
-        //print_r($array) ; exit();
-
         foreach ($array as $key => $value) {
                 if(strtotime($array[$key][0]) >= strtotime($from) &&  strtotime($array[$key][0]) <= strtotime($to)) {
                     if(stripos($input['personName'], '*and*') === false){
@@ -184,27 +180,26 @@ class BydateController extends Controller
                           $j++;
                       }    
                     } else {
-                       $textToDisplay[$j] = $array[$key];
-                       $no_date = explode(':' ,$array[$key][1]);
-                       $selected_array[$j] = preg_replace('/[^a-z]/i', ' ', end($no_date));
-                        $j++;               
+                      $textToDisplay[$j] = $array[$key];
+                      $no_date = explode(':' ,$array[$key][1]);
+                      $selected_array[$j] = preg_replace('/[^a-z]/i', ' ', end($no_date));
+                      $j++;               
                     }
                 }
-            }       
+            }
+         $final_txt = '';
+        foreach ($selected_array as $key => $value) {
+          $final_txt  .=  $selected_array[$key]."<br />";
+        }
+        if($final_txt !== '')
+        {
+          Storage::put('finaltext/'.\Auth::user()->id.'.txt', $final_txt);
+        }            
+        fclose($file);
         if(count($textToDisplay) == 0){
           return back()->withInput();
         }
-        $final_txt = array();
-        foreach ($textToDisplay as $key => $value) {
-          $final_txt[date('m/d/y', strtotime($textToDisplay[$key][0]))][] = $selected_array[$key];
-        }
-        $stringCon = json_encode($final_txt);
-         
-        if($stringCon !== '')
-        {
-          Storage::put('finaltext/'.\Auth::user()->id.'.txt', $stringCon);
-        }            
-        fclose($file);
+            
 
         //save User Input values to database for later to use for api call and history
       UserInput::create(['name'=>$input['personName'] , 'fromdate'=>$from , 'todate'=>$to , 'noofdays' =>$input['days'] , 'user_id' => \Auth::user()->id]);
