@@ -32,7 +32,7 @@
                  </div>            
                @endif
               <div class="form-group">
-                <label for="toDate">From Date</label>
+                <label for="toDate">To Date</label>
                 <input class="form-control" type="date" name="toDate" id="toDate" required>
               </div>
               @if($frontEndValues)
