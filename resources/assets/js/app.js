@@ -19,6 +19,9 @@ import Chart from 'chart.js';
 
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('graph', require('./components/Graph.vue'));
+Vue.component('graphdouble', require('./components/GraphDouble.vue'));
+Vue.component('graph1', require('./components/Graph1.vue'));
+
 
 const app = new Vue({
     el: '#app'

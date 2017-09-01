@@ -5,13 +5,13 @@
  <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <form action="/display/getAnalysis" method="GET">
+            <form action="/display2/getAnalysis" method="GET">
             {{ csrf_field() }}
             <div class="form-group">                                            
                 <button type="submit" class="btn btn-primary">Send texts to Lab</button>
               </div> 
               <div>
-                <a href="/display">Change Dates</a>
+                <a href="/display2">Change Dates</a>
               </div>             
             </form>            
         </div>
@@ -27,13 +27,13 @@
                 </div>
             </div>
           <div class="col-md-8 col-md-offset-2">
-            <form action="/display/getAnalysis" method="GET">
+            <form action="/display2/getAnalysis" method="GET">
             {{ csrf_field() }}
             <div class="form-group">                                            
                 <button type="submit" class="btn btn-primary">Send texts to Lab</button>
               </div> 
               <div>
-                <a href="/display">Change Dates</a>
+                <a href="/display2">Change Dates</a>
               </div>             
             </form>            
         </div>  

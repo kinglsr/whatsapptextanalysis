@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Pathfile;
+use App\Http\Controllers\HomeController;;
+use App\Date;
 use App\UserInput;
-use App\Http\Controllers\HomeController;
+use \Datetime;
 
-
-class DisplayController extends Controller
+class BydateController extends Controller
 {
   /**
    * Create a new controller instance.
@@ -20,7 +20,7 @@ class DisplayController extends Controller
    */
   public function __construct()
   {
-    $this->middleware('auth');
+      $this->middleware('auth');
   }
 
   /**
@@ -29,11 +29,68 @@ class DisplayController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function index()
+  {
+    return view('bydate');
+  }
+
+  //Upload Single text file
+ /**
+  *
+  *@param array bydateStore(Request $request)
+  *@return \Illuminate\Http\Response
+ */
+
+  public function bydateStore(Request $request){
+
+    $datetype = $request['datetype'];
+    $phoneModel = $request['phonemodel'];     
+
+    $name = $request->file('chatfile')->getClientOriginalName();
+    $ext = $request->file('chatfile')->getClientOriginalExtension();
+    if($ext == 'txt'){        
+      $path = $request->file('chatfile')->storeAs('chatfiles', time().'_'.\Auth::user()->name.$name);
+
+      $content = file_get_contents($request->file('chatfile'));
+      \Storage::disk('ftp')->put(time().'_'.\Auth::user()->name.$name, $content );
+      
+
+      if($phoneModel === 'windows')
+      {
+        $errors = array('Windows Phone is not yet supported');
+        return view('bydate' , compact('errors')); 
+      }
+      $obj = new HomeController;
+      $frontEndValues = $obj->getDetails($path , $datetype , $phoneModel);
+
+      if(is_array($frontEndValues)) 
+      { 
+        // save it to database if everything goes well
+        Pathfile::create(['filepath'=>$path , 'dateformat'=>$datetype  , 'phonemodel' =>$phoneModel , 'testtype' =>'bydate' ,'user_id' => \Auth::user()->id]);  
+        return redirect('/display2');         
+      }
+      else 
+      {
+        $errors = array($frontEndValues);
+        return view('bydate' , compact('errors'));
+      }
+    }
+    else {
+      $errors = array('Only Text files are Allowed');      
+      return view('bydate' , compact('errors')); 
+    }      
+  }
+  
+  /**
+   * Show the application dashboard.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function display2()
   { 
     $inputValues = $this->getInputValues();
     $obj = new HomeController;
     $frontEndValues = $obj->getDetails($inputValues[0] , $inputValues[1] , $inputValues[2] , $inputValues[3]);
-    return view('/display' , compact('frontEndValues'));
+    return view('/display2' , compact('frontEndValues'));
   }
 
 
@@ -50,8 +107,6 @@ class DisplayController extends Controller
     $inputValues = array($filename[0]->filepath, $filename[0]->dateformat, $filename[0]->phonemodel, $filename[0]->testtype);
     return $inputValues;
   }
-  
-
 
   //Get content from file
 
@@ -66,11 +121,23 @@ class DisplayController extends Controller
      
     $newfrom = $fromArray[1].'/'.$fromArray[2].'/'.$fromyear[1];
 
-    //to date based on user date selection
-    $toDate = date('m/d/y', strtotime($input['fromDate']. ' + ' . $input['days'] .'days'));
+    $toArray = explode('-', $input['toDate']);
+     
+    $toyear = str_split($fromArray[0] , 2);
+     
+    $newto = $fromArray[1].'/'.$fromArray[2].'/'.$fromyear[1];
+    
 
     $from = $newfrom;    //  whatsapp  mon/date/year  6/14/16
-    $to = $toDate;
+    $to = $newto;
+
+    $date1 = new DateTime($input['toDate']);
+
+    $date2 = new DateTime($input['fromDate']);
+
+
+    $days= date_diff( $date1 , $date2); 
+    $input['days']  = $days->format('%a total days'); 
     
     $filePath = $this->getInputValues();
     try
@@ -103,9 +170,10 @@ class DisplayController extends Controller
         $textToDisplay = array();
 
         $j = 0;
+        
+        //print_r($array) ; exit();
 
         foreach ($array as $key => $value) {
-
                 if(strtotime($array[$key][0]) >= strtotime($from) &&  strtotime($array[$key][0]) <= strtotime($to)) {
                     if(stripos($input['personName'], '*and*') === false){
                       $per = $input['personName'];
@@ -114,7 +182,7 @@ class DisplayController extends Controller
                           $no_date = explode(':' ,$array[$key][1]);
                           $selected_array[$j] = preg_replace('/[^a-z]/i', ' ', end($no_date)).".";
                           $j++;
-                       }    
+                      }    
                     } else {
                        $textToDisplay[$j] = $array[$key];
                        $no_date = explode(':' ,$array[$key][1]);
@@ -122,7 +190,7 @@ class DisplayController extends Controller
                         $j++;               
                     }
                 }
-            }         
+            }       
         if(count($textToDisplay) == 0){
           return back()->withInput();
         }
@@ -140,57 +208,27 @@ class DisplayController extends Controller
 
         //save User Input values to database for later to use for api call and history
       UserInput::create(['name'=>$input['personName'] , 'fromdate'=>$from , 'todate'=>$to , 'noofdays' =>$input['days'] , 'user_id' => \Auth::user()->id]);
-        return view('/texts' , compact('textToDisplay'));
+        return view('/bydatetexts' , compact('textToDisplay'));
     }
     catch (Illuminate\Filesystem\FileNotFoundException $exception)
     {
       return die("The file doesn't exist");
     }
   }
-  
-  // Get analysis based on the type of test
 
-  public function getAnalysis() 
-  {        
-     // find the test type from the database 
-    $query = 'select testtype from pathfiles where user_id = '.\Auth::user()->id. ' order by created_at desc LIMIT 1';
-    $queryValues = \DB::select($query); 
-
-    // Get the user input values from the database 
-    $query1 = 'select * from user_inputs where user_id = '.\Auth::user()->id. ' order by created_at desc LIMIT 1';
-    $userInputValues = \DB::select($query1); 
-    $userInputs = json_decode(json_encode($userInputValues[0]), true);    
-    if($queryValues[0]->testtype === 'single')
+  public function getAnalysis()
     {
-      $responses = $this->getsingleAnalysis();
-      $positive = array() ; $negative = array() ; $neutral = array(); $label = array();
-       
-       foreach ($responses as $key => $value) {
-          $positive[$key] = $responses[$key]['probability']['pos'];
-          $negative[$key] = $responses[$key]['probability']['neg'];
-          $neutral[$key] = $responses[$key]['probability']['neutral'];
-          $label[$key] = $responses[$key]['label'];        
-        }
-      return view('/singlegraph' , compact('positive' , 'negative' , 'neutral', 'label', 'userInputs' ));
-    }
-  }    
+      try
+      {
+        // Get the user input values from the database 
+        $query1 = 'select * from user_inputs where user_id = '.\Auth::user()->id. ' order by created_at desc LIMIT 1';
+        $userInputValues = \DB::select($query1); 
+        $userInputs = json_decode(json_encode($userInputValues[0]), true);
 
-  public function getsingleAnalysis()
-  {
-    try 
-    {
-      // Get file content
-      $fileName = storage_path('app/finaltext/'.\Auth::user()->id.'.txt');
-      $file = file_get_contents($fileName);
 
-      $textArray = json_decode($file , true);
+        $fileName = storage_path('app/finaltext/'.\Auth::user()->id.'.txt');
+        $textToSend = file_get_contents($fileName);
 
-      $responses = array();
-      foreach ($textArray as $key => $value) {
-        
-        $text = json_encode($textArray[$key]);
-        
-        $textToSend = preg_replace('/[^a-z]/i', ' ', $text.".");
 
         // $ curl -d "text=great" http://text-processing.com/api/sentiment/
         
@@ -200,16 +238,26 @@ class DisplayController extends Controller
         curl_setopt($ch,CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_POSTFIELDS, 'text='.$textToSend);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-       //execute post         
-        $json = (curl_exec($ch));
-        $jsontoArray = json_decode($json , true);
-        $responses[$key] = $jsontoArray;
+       //execute post
+        if(curl_exec($ch))
+          {
+            $json = (curl_exec($ch));
+            $results = json_decode($json, true);       
+            $probability = $results['probability'];
+            $label = $results['label'];
+            return view('/bydategraph' , compact('label' , 'probability' , 'userInputs'));
+          }
+        else {
+          return ('No server Response');
+        }
         curl_close($ch);
-      }
-      return $responses;        
-    } catch (Illuminate\Filesystem\FileNotFoundException $e) {
+        
 
-      return back()->withInput();        
-    }     
-  }
+        //return $result;        
+      } catch (Illuminate\Filesystem\FileNotFoundException $e) {
+
+        return back()->withInput();        
+      }      
+    }
+
 }

@@ -8,40 +8,39 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Hurray!!</div>                       
                 <div class="panel-body">                    
-                  Select the Dates and Name you want to search
+                    Select the Dates and Name you want to search
                 </div>
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
-             <form action="/display/getContent" method="POST" >
+             <form action="/display2/getContent" method="POST" >
              {{ csrf_field() }}
               <div class="form-group">
                 <label for="personName">Select list:</label>
                 <select class="form-control" id="personName" name="personName" required>
                     <option value="{{$frontEndValues[0]}}">{{$frontEndValues[0]}}</option>
                     <option value="{{$frontEndValues[1]}}">{{$frontEndValues[1]}}</option>
-                    <option value="both {{$frontEndValues[0]}} *and* {{$frontEndValues[1]}} ">Both</option>
+                    <option value="both {{$frontEndValues[0][0]}} *and* {{$frontEndValues[0][1]}} ">Both</option>
                 </select>
               </div>              
               <div class="form-group">
-              @if(count($frontEndValues))
-                <label for="fromDate">Select Date Between {{$frontEndValues[2]}} & {{$frontEndValues[3]}}</label>
+                <label for="fromDate">From Date</label>
                 <input class="form-control" type="date" name="fromDate" id="fromDate" required>
-              </div>                   
+              </div>
+              @if(count($frontEndValues))
+                 <div class="alert alert-success" role="alert">FROM DATE SHOULD BE LESS THAN To DATE </br> Select Date Between {{$frontEndValues[2]}} and {{$frontEndValues[3]}}
+                 </div>            
                @endif
               <div class="form-group">
-              <label for="days">Select No of days you want to text the data
-               <select class="form-control"  id="days" name="days" value = '0' required>
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                </select>
-              </div>              
+                <label for="toDate">From Date</label>
+                <input class="form-control" type="date" name="toDate" id="toDate" required>
+              </div>
+              @if($frontEndValues)
+                 <div class="alert alert-success" role="alert">TO DATE SHOULD BE GREATER THAN FROM DATE </br>
+                 Select Date Between {{$frontEndValues[2]}} and {{@$frontEndValues[3]}}               
+                 </div>            
+               @endif      
+              
               <div class="form-group">
               <button type="submit" class="btn btn-primary">Get the Content</button>
               </div>

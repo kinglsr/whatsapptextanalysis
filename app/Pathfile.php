@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pathfile extends Model
 {
     
-   protected $fillable = ['filepath' ,'user_id'];
+   protected $fillable = ['filepath' ,'dateformat' , 'testtype' , 'phonemodel' ,'user_id'];
 
    
     //function to get the file uploaded by the user

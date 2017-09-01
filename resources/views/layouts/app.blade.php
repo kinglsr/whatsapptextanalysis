@@ -8,10 +8,12 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'WhatsApp') }}</title>
+    <title>{{ config('app.name', 'WhatsAppTextsAnalysis') }}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <!---Emoji Styles -->
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
 </head>
 <body>
     <div id="app">         
@@ -29,7 +31,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'WhatApp') }}
+                        {{ config('app.name', 'WhatsAppTextsAnalysis') }}
                     </a>
                 </div>
 
@@ -39,7 +41,7 @@
                         &nbsp;
                     </ul>
 
-                    <!-- Right Side Of Navbar -->
+                    <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-left">
                         <!-- Authentication Links -->
                         @if (Auth::guest())
@@ -65,7 +67,17 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li><a href="/sample">Sample</a></li>
+                            <li><a href="/bydate">ByDate</a></li>
+                            <li><a href="/single">SingleTest</a></li>
+                            <li><a href="/double">DoubleTest</a></li> 
+                            <li><a href="/group">GroupTest</a></li>                        
+                            <li><a href="/history">History</a>                    
                         @endif
+                    </ul>
+                    <!-- Right Side Of Navbar -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/help">Help</a>
                     </ul>
                 </div>
             </div>
@@ -75,5 +87,7 @@
     
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/dropzone.js') }}"></script>
+
 </body>
 </html>
