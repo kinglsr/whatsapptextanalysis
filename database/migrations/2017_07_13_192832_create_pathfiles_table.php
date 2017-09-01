@@ -31,6 +31,6 @@ class CreatePathfilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('pathfiles');
     }
 }

@@ -11,7 +11,7 @@ class UserInput extends Model
 
    
     //function 
-    public function user() // $file->user->name
+    public function user() // $userinput->user->name
     {
     	return $this->belongsTo(User::class);
     }

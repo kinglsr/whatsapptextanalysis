@@ -32,4 +32,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pathfile::class);
     }
+
+    public function userinput()
+    {
+        return $this->hasMany(UseInput::class);
+    }
 }
