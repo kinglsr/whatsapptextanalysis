@@ -29,7 +29,7 @@
             <h3>Single Person By Date</h3>
             <p>Select a single chat file and figureout the relationship on selected time frame</p>
             <p><a href="/bydate" class="btn btn-default" role="button">ByDate</a></p>
-            <p><<a href="{{ asset('images/sample.txt') }}" download>Download Sample Chat Text </a> </p>
+            <p><a href="{{ asset('images/sample.txt') }}" download>Download Sample Chat Text </a> </p>
           </div>
         </div>
       </div>  
