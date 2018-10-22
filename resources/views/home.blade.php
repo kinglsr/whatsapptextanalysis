@@ -27,8 +27,9 @@
           <img src="..." alt="...">
           <div class="caption">
             <h3>Single Person By Date</h3>
-            <p>Select a single chat file and figureout the relationship From Start Date to End Date</p>
+            <p>Select a single chat file and figureout the relationship on selected time frame</p>
             <p><a href="/bydate" class="btn btn-default" role="button">ByDate</a></p>
+            <p><<a href="{{ asset('images/sample.txt') }}" download>Download Sample Chat Text </a> </p>
           </div>
         </div>
       </div>  
