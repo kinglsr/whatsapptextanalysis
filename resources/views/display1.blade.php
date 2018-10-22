@@ -20,16 +20,14 @@
                 <label for="personName">Select Name for First Person:</label>
                 <select class="form-control" id="personName[]" name="personName[]" required>
                     <option value="{{$frontEndValues[0][0]}}">{{$frontEndValues[0][0]}}</option>
-                    <option value="{{$frontEndValues[0][1]}}">{{$frontEndValues[0][1]}}</option>
-                    <option value="both {{$frontEndValues[0][0]}} *and* {{$frontEndValues[0][1]}} ">Both</option>
+                    <option value="{{$frontEndValues[0][1]}}">{{$frontEndValues[0][1]}}</option>                  
                 </select>
               </div>
                 <div class="form-group">
                   <label for="personName">Select Name for Second Person:</label>
                   <select class="form-control" id="personName[]" name="personName[]" required>
                     <option value="{{$frontEndValues[1][0]}}">{{$frontEndValues[1][0]}}</option>
-                    <option value="{{$frontEndValues[1][1]}}">{{$frontEndValues[1][1]}}</option>
-                    <option value="both {{$frontEndValues[1][0]}} *and* {{$frontEndValues[1][1]}} ">Both</option>
+                    <option value="{{$frontEndValues[1][1]}}">{{$frontEndValues[1][1]}}</option>                    
                   </select>
                 </div>             
                 <div class="form-group">
